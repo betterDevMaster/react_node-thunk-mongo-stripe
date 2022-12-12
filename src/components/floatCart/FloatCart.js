@@ -76,18 +76,11 @@ class FloatCart extends Component {
   };
 
   proceedToCheckout = () => {
-    const { totalPrice, productQuantity, currencyFormat, currencyId } =
-      this.props.cartTotals;
+    const { productQuantity } = this.props.cartTotals;
 
     if (!productQuantity) {
       alert("Add some product in the bag!");
     } else {
-      console.log(
-        `Checkout - Subtotal: ${currencyFormat} ${util.formatPrice(
-          totalPrice,
-          currencyId
-        )}`
-      );
       this.setState({ ...this.state, isCheckout: true });
     }
   };

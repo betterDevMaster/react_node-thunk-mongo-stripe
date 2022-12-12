@@ -47,7 +47,8 @@ const Checkout = (props) => {
         payment_method: id,
       })
       .then((res) => {
-        if (res.success) alert("Error::: " + res.message);
+        if (!res.data.success) alert("Error::: " + res.data.message);
+        else alert(res.data.message);
       })
       .catch((err) => {
         console.log(err);
