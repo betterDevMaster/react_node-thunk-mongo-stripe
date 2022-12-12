@@ -2,20 +2,7 @@ import { FETCH_PRODUCTS } from "./types";
 import axios from "axios";
 
 const productsAPI =
-  "https://react-shopping-cart-67954.firebaseio.com/products.json";
-
-const compare = {
-  lowestprice: (a, b) => {
-    if (a.price < b.price) return -1;
-    if (a.price > b.price) return 1;
-    return 0;
-  },
-  highestprice: (a, b) => {
-    if (a.price > b.price) return -1;
-    if (a.price < b.price) return 1;
-    return 0;
-  },
-};
+  "http://localhost:8001/api/products";
 
 export const fetchProducts = (filter, callback) => (dispatch) => {
   axios

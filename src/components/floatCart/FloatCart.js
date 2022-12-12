@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Navigate } from "react-router-dom"; // , useNavigate
 
-import { connect } from 'react-redux';
-import { loadCart, removeProduct } from '../../store/actions/floatCartActions';
-import { updateCart } from '../../store/actions/updateCartActions';
+import { connect } from "react-redux";
+import { loadCart, removeProduct } from "../../store/actions/floatCartActions";
+import { updateCart } from "../../store/actions/updateCartActions";
 
-import CartProduct from './CartProduct';
+import CartProduct from "./CartProduct";
 
 import persistentCart from "../../persistentCart";
 
-import util from '../../util';
-
+import util from "../../util";
 
 class FloatCart extends Component {
-  
   state = {
     isOpen: false,
+    isCheckout: false,
   };
 
   componentWillMount() {
-    this.props.loadCart( JSON.parse(persistentCart().get()) || [] );
+    this.props.loadCart(JSON.parse(persistentCart().get()) || []);
   }
 
   componentDidMount() {
@@ -39,18 +39,18 @@ class FloatCart extends Component {
   }
 
   openFloatCart = () => {
-    this.setState({ isOpen: true });
-  }
+    this.setState({ ...this.state, isOpen: true });
+  };
 
   closeFloatCart = () => {
-    this.setState({ isOpen: false });
-  }
+    this.setState({ ...this.state, isOpen: false });
+  };
 
   addProduct = (product) => {
     const { cartProducts, updateCart } = this.props;
     let productAlreadyInCart = false;
 
-    cartProducts.forEach(cp => {
+    cartProducts.forEach((cp) => {
       if (cp.id === product.id) {
         cp.quantity += product.quantity;
         productAlreadyInCart = true;
@@ -63,56 +63,59 @@ class FloatCart extends Component {
 
     updateCart(cartProducts);
     this.openFloatCart();
-  }
+  };
 
   removeProduct = (product) => {
     const { cartProducts, updateCart } = this.props;
 
-    const index = cartProducts.findIndex(p => p.id === product.id);
+    const index = cartProducts.findIndex((p) => p.id === product.id);
     if (index >= 0) {
       cartProducts.splice(index, 1);
       updateCart(cartProducts);
     }
-  }
+  };
 
   proceedToCheckout = () => {
-    const { totalPrice, productQuantity, currencyFormat, currencyId } = this.props.cartTotals;
+    const { totalPrice, productQuantity, currencyFormat, currencyId } =
+      this.props.cartTotals;
 
     if (!productQuantity) {
       alert("Add some product in the bag!");
-    }else {
-      alert(`Checkout - Subtotal: ${currencyFormat} ${util.formatPrice(totalPrice, currencyId)}`);
+    } else {
+      console.log(
+        `Checkout - Subtotal: ${currencyFormat} ${util.formatPrice(
+          totalPrice,
+          currencyId
+        )}`
+      );
+      this.setState({ ...this.state, isCheckout: true });
     }
-  }
+  };
 
   render() {
     const { cartTotals, cartProducts, removeProduct } = this.props;
 
-    const products = cartProducts.map(p => {
+    const products = cartProducts.map((p) => {
       return (
-        <CartProduct
-          product={p}
-          removeProduct={removeProduct}
-          key={p.id}
-        />
+        <CartProduct product={p} removeProduct={removeProduct} key={p.id} />
       );
     });
 
-    let classes = ['float-cart'];
-
+    let classes = ["float-cart"];
     if (!!this.state.isOpen) {
-      classes.push('float-cart--open');
+      classes.push("float-cart--open");
     }
 
     return (
-      <div className={classes.join(' ')}>
+      <div className={classes.join(" ")}>
         {/* If cart open, show close (x) button */}
+        {this.state.isCheckout && <Navigate to="/checkout" />}
         {this.state.isOpen && (
           <div
             onClick={() => this.closeFloatCart()}
             className="float-cart__close-btn"
           >
-          X
+            X
           </div>
         )}
 
@@ -136,11 +139,12 @@ class FloatCart extends Component {
             <span className="header-title">Bag</span>
           </div>
 
-          <div className="float-cart__shelf-container">
+          <div className="float-cart__container">
             {products}
             {!products.length && (
               <p className="shelf-empty">
-                Add some product in the bag <br />:)
+                Add some product in the bag <br />
+                :)
               </p>
             )}
           </div>
@@ -149,12 +153,20 @@ class FloatCart extends Component {
             <div className="sub">SUBTOTAL</div>
             <div className="sub-price">
               <p className="sub-price__val">
-                {`${cartTotals.currencyFormat} ${util.formatPrice(cartTotals.totalPrice, cartTotals.currencyId)}`}
+                {`${cartTotals.currencyFormat} ${util.formatPrice(
+                  cartTotals.totalPrice,
+                  cartTotals.currencyId
+                )}`}
               </p>
               <small className="sub-price__installment">
                 {!!cartTotals.installments && (
                   <span>
-                    {`OR UP TO ${cartTotals.installments} x ${cartTotals.currencyFormat} ${util.formatPrice(cartTotals.totalPrice / cartTotals.installments, cartTotals.currencyId)}`}
+                    {`OR UP TO ${cartTotals.installments} x ${
+                      cartTotals.currencyFormat
+                    } ${util.formatPrice(
+                      cartTotals.totalPrice / cartTotals.installments,
+                      cartTotals.currencyId
+                    )}`}
                   </span>
                 )}
               </small>
@@ -178,12 +190,15 @@ FloatCart.propTypes = {
   productToRemove: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   cartProducts: state.cartProducts.items,
   newProduct: state.cartProducts.item,
   productToRemove: state.cartProducts.itemToRemove,
   cartTotals: state.cartTotals.item,
 });
 
-export default connect(mapStateToProps, { loadCart, updateCart, removeProduct})(FloatCart);
-
+export default connect(mapStateToProps, {
+  loadCart,
+  updateCart,
+  removeProduct,
+})(FloatCart);

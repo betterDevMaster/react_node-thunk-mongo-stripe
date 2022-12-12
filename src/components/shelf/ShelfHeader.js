@@ -12,7 +12,7 @@ class ShelfHeader extends Component {
 
   render() {
     return (
-      <div className="shelf-container-header">
+      <div className="container-header">
         <h2>Browse the Catalogue</h2>
         <input
           type="text"

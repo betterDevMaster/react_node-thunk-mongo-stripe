@@ -6,10 +6,10 @@ import { fetchProducts } from "../../store/actions/productActions";
 import { addProduct } from "../../store/actions/floatCartActions";
 
 import Product from "./Product";
-// import Filter from './Filter';
 import ShelfHeader from "./ShelfHeader";
 import Clearfix from "../Clearfix";
 import Spinner from "../Spinner";
+import FloatCart from "../floatCart/FloatCart";
 
 class Shelf extends Component {
   state = {
@@ -49,13 +49,13 @@ class Shelf extends Component {
     return (
       <React.Fragment>
         {this.state.loading && <Spinner />}
-        {/* <Filter />   */}
-        <div className="shelf-container">
+        <div className="container">
           <ShelfHeader productsLength={products.length} />
           {p}
           <Clearfix />
         </div>
         <Clearfix />
+        <FloatCart />
       </React.Fragment>
     );
   }
