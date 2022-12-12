@@ -14,7 +14,7 @@ import Footer from "../components/Footer";
 import store from "../store";
 
 const PUBLIC_KEY =
-  "pk_test_51ME719A5xeLlYMZsVPxWckUeVYnfh7LrElc0u7ykBW2tFa2FEgLoD5Bn22U3SYxHbtLIinLcDxa6rHytEcTZ13i0009fouY47e";
+  "pk_test_51LxG7gIAzrcl9sc4iku7NsRXMFdVAFAYuMapJM6xhyrdxtI5l0oZVkxJeUGrizqpD5A0D6dF2e2JBlEGgXXcJ2VT00wxFU0E9U";
 const stripeTestPromise = loadStripe(PUBLIC_KEY);
 
 class App extends Component {
